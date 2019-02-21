@@ -1,0 +1,64 @@
+- name: Ensure LAVA deb archive signing keys are installed.
+  apt_key:
+      id: "{{ lava_apt_key_id }}"
+      url: "{{ lava_apt_key_url }}"
+      state: present
+  when: lava_apt_key_id is defined and lava_apt_key_url is defined
+
+- name: Ensure LAVA apt source repository is present.
+  apt_repository:
+    repo: "{{ lava_apt_repo }}"
+    state: present
+  when: lava_apt_repo is defined
+
+- name: Ensure LAVA and dependencies are installed.
+  apt:
+    update_cache: yes
+    name:
+    - lava-server={{ lava_version }}
+    # Following is not strictly required, but handy to have docs matching with
+    # the current version directly inside the local instance.
+    - lava-server-doc={{ lava_version }}
+    # Required for LAVA MultiNode jobs only.
+    - lava-coordinator
+    state: present
+    install_recommends: no
+
+- name: Deploy LAVA logger settings.
+  template:
+    src: ./templates/lava-logs.j2
+    dest: "{{ lava_srv_conf_dir }}/lava-logs"
+    mode: u=rw,g=r,o=r
+  notify: restart lava-logs
+
+- name: Deploy LAVA master settings.
+  template:
+    src: ./templates/lava-master.j2
+    dest: "{{ lava_srv_conf_dir }}/lava-master"
+    mode: u=rw,g=r,o=r
+  notify: restart lava-master
+
+- name: Deploy LAVA coordinator config for MultiNode jobs.
+  template:
+    src: ./templates/lava-coordinator.conf.j2
+    dest: "{{ lava_coordinator_conf_dir }}/lava-coordinator.conf"
+    mode: u=rw,g=r,o=r
+  notify: restart lava-coordinator
+
+- name: Deploy LAVA server settings.
+  template:
+    src: ./templates/lava-server-settings.conf.j2
+    dest: "{{ lava_srv_conf_dir }}/settings.conf"
+    mode: u=rw,g=r,o=r
+  notify: "restart LAVA services"
+
+- name: Ensure LAVA services are started.
+  service:
+    state: started
+    name: "{{ item }}"
+  with_list:
+  - lava-publisher
+  - lava-logs
+  - lava-master
+  - lava-coordinator
+  - lava-server-gunicorn

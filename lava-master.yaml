@@ -1,0 +1,13 @@
+---
+- hosts: lava-master
+  become: yes
+  roles:
+    - lava-master
+  post_tasks:
+    - name: Run LAVA deployment check.
+      command: lava-server manage check --deploy
+      register: lava_check_deployment
+      changed_when: "lava_check_deployment.rc != 0"
+  vars_files:
+    - group_vars/lava-common.yaml
+    - group_vars/lava-master.yaml

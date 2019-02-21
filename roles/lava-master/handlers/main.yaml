@@ -1,0 +1,36 @@
+---
+
+- name: restart apache
+  service:
+    name: apache2
+    state: restarted
+
+- name: restart lava-publisher
+  service:
+    name: lava-publisher
+    state: restarted
+  listen: "restart LAVA services"
+
+- name: restart lava-logs
+  service:
+    name: lava-logs
+    state: restarted
+  listen: "restart LAVA services"
+
+- name: restart lava-master
+  service:
+    name: lava-master
+    state: restarted
+  listen: "restart LAVA services"
+
+- name: restart lava-coordinator
+  service:
+    name: lava-coordinator
+    state: restarted
+  listen: "restart LAVA services"
+
+- name: restart lava-server-gunicorn
+  service:
+    name: lava-server-gunicorn
+    state: restarted
+  listen: "restart LAVA services"

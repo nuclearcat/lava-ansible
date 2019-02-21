@@ -1,0 +1,17 @@
+---
+- hosts: lava-master
+  tasks:
+  - name: Gather network facts of LAVA master
+    setup:
+      gather_subset:
+        - '!all'
+        - '!any'
+        - network
+
+- hosts: lava-workers
+  become: yes
+  roles:
+    - lava-worker
+  vars_files:
+    - group_vars/lava-common.yaml
+    - group_vars/lava-worker.yaml

@@ -1,0 +1,15 @@
+{
+    "HTTPS_XML_RPC": false,
+    "MOUNT_POINT": "/",
+    "STATIC_URL": "/static/",
+    "ALLOWED_HOSTS": {{ lava_allowed_hosts }},
+{# Disable "delete" button/actions in critical areas in the Django admin
+ # interface, see https://staging.validation.linaro.org/static/docs/v2/advanced-installation.html#controlling-the-django-admin-interface
+#}
+    "ALLOW_ADMIN_DELETE": false,
+    "INSTANCE_NAME": "{{ lava_instance_name }}"
+    {%- for item in lava_srv_gunicorn_extra_vars|default([]) -%},
+    {{ item }}
+    {%- endfor %}
+
+}

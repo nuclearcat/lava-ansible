@@ -1,0 +1,69 @@
+- name: Ensure conflicting software is not installed.
+  apt:
+    name:
+    - adb
+    - fastboot
+    state: absent
+    autoremove: yes
+    purge: yes
+
+- name: Ensure LAVA deb archive signing keys are installed.
+  apt_key:
+      id: "{{ lava_apt_key_id }}"
+      url: "{{ lava_apt_key_url }}"
+      state: present
+  when: lava_apt_key_id is defined and lava_apt_key_url is defined
+
+- name: Ensure LAVA apt source repository is present.
+  apt_repository:
+    repo: "{{ lava_apt_repo }}"
+    state: present
+  when: lava_apt_repo is defined
+
+- name: Ensure LAVA and dependencies are installed.
+  apt:
+    update_cache: yes
+    name:
+    - debootstrap
+    - git
+    - lava-dispatcher={{ lava_version }}
+    - lxc
+    - lxc-templates
+    - lxcfs
+    - rsync
+    - unzip
+    - xz-utils
+    state: present
+    install_recommends: no
+
+- name: Deploy LAVA slave config.
+  template:
+    src: ./templates/lava-slave.j2
+    dest: "{{ lava_dispatcher_conf_dir }}/lava-slave"
+    mode: u=rw,g=r,o=r
+  notify: restart lava-slave
+
+# One LAVA coordinator handles multiple LAVA workers. The coordinator is
+# installed alongside with the LAVA master; LAVA workers don't have a
+# coordinator installed. Yet, workers read the coordinator network configuration
+# from the coordinator configuration directory instead of their own.
+- name: Ensure LAVA coordinator config directory exists.
+  file:
+    path: "{{ lava_coordinator_conf_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: u=rwX,g=rX,o=rX
+    recurse: yes
+
+- name: Deploy LAVA coordinator config for MultiNode jobs.
+  template:
+    src: ./templates/lava-coordinator.conf.j2
+    dest: "{{ lava_coordinator_conf_dir }}/lava-coordinator.conf"
+    mode: u=rw,g=r,o=r
+  notify: restart lava-slave
+
+- name: Ensure LAVA slave service is started.
+  service:
+    state: started
+    name: lava-slave

@@ -1,0 +1,10 @@
+apache_conf_dir: "/etc/apache2"
+apache_lava_site_config_name: "lava-server.conf"
+# Must be set starting with 2019.03. Current values assume running behind a proxy or on a local machine.
+lava_allowed_hosts: '["[::1]", "127.0.0.1", "localhost"]'
+lava_instance_name: "production"
+lava_srv_conf_dir: "/etc/lava-server"
+# TODO: Remove after setting up HTTPS access.
+lava_srv_gunicorn_extra_vars:
+  - '"CSRF_COOKIE_SECURE": false'
+  - '"SESSION_COOKIE_SECURE": false'

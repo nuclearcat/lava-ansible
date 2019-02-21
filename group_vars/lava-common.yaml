@@ -1,0 +1,14 @@
+# LAVA version to install.
+# Before upgrading to a new major version of LAVA, upgrade documentation and/or
+# the lava-announce mailing list must be consulted.
+lava_version: "2019.03*"
+lava_apt_key_id: "A791358F2E49B100"
+lava_apt_key_url: "https://apt.lavasoftware.org/lavasoftware.key.asc"
+lava_apt_repo: "deb https://apt.lavasoftware.org/release buster main"
+
+lava_srv_http_port: 80
+lava_master_port: 5556
+lava_logger_port: 5555
+lava_coordinator_conf_dir: "/etc/lava-coordinator"
+lava_coordinator_port: 3079
+lava_master_host_ip: "{{ hostvars['lava-master']['ansible_default_ipv4']['address'] }}"

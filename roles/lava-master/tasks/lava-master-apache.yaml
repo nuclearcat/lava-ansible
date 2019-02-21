@@ -1,0 +1,37 @@
+- name: Ensure Apache2 default site is disabled.
+  command: a2dissite 000-default
+  args:
+    removes: "{{ apache_conf_dir }}/sites-enabled/000-default.conf"
+  notify: restart apache
+
+- name: Ensure Apache2 modules are enabled.
+  apache2_module:
+    state: present
+    name: "{{ item }}"
+  with_list:
+  - proxy
+  - proxy_http
+# Apache modules "expires" and "headers" are required with LAVA 2019.2.
+# They are used to improve browser caching for LAVA.
+  - headers
+  - expires
+  notify: restart apache
+
+- name: Deploy Apache LAVA site config.
+  template:
+    src: ./templates/apache-site-lava-server.conf.j2
+    dest: "{{ apache_conf_dir }}/sites-available/{{ apache_lava_site_config_name }}"
+    mode: u=rw,g=r,o=r
+  notify: restart apache
+
+- name: Ensure Apache LAVA site is enabled.
+  file:
+    src: "{{ apache_conf_dir }}/sites-available/{{ apache_lava_site_config_name }}"
+    dest: "{{ apache_conf_dir }}/sites-enabled/{{ apache_lava_site_config_name }}"
+    state: link
+  notify: restart apache
+
+- name: Ensure Apache is running.
+  service:
+    state: started
+    name: apache2

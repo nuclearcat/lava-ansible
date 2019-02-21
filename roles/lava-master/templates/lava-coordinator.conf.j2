@@ -1,0 +1,8 @@
+{# Coordinator configuration file to be deployed to coordinator and workers. #}
+{
+    "port": {{ lava_coordinator_port }},
+    "blocksize": 4096,
+    "poll_delay": 3,
+    {# Deploy the LAVA coordinator alongside with the LAVA master. #}
+    "coordinator_hostname": "{{ lava_master_host_ip }}"
+}

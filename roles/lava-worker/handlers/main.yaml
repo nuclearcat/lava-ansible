@@ -1,0 +1,6 @@
+---
+
+- name: restart lava-slave
+  service:
+    name: lava-slave
+    state: restarted
