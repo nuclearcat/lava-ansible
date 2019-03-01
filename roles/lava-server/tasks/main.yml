@@ -1,0 +1,54 @@
+---
+- name: Install postgresql
+  apt:
+    name: postgresql
+    state: present
+- name: Start postgresql
+  service:
+    name: postgresql
+    state: started
+- name: Install gpg
+  apt:
+    name: gpg
+    state: present
+- name: Install gpg-agent
+  apt:
+    name: gpg-agent
+    default_release: stretch-backports
+    state: present
+- name: Install apt-transport-https
+  apt:
+    name: apt-transport-https
+    state: present
+- name: Add lavasoftware.org APT key
+  apt_key:
+    id: C87D63FD935535CFB0CAF5C2A791358F2E49B100
+    url: https://apt.lavasoftware.org/lavasoftware.key.asc
+    state: present
+- name: Add lavasoftware.org APT repository
+  apt_repository:
+    repo: deb https://apt.lavasoftware.org/release stretch-backports main
+    filename: lava
+    state: present
+- name: Install lava-server
+  apt:
+    name: lava-server
+    default_release: stretch-backports
+    state: present
+    update_cache: yes
+- name: Start lava-server-gunicorn
+  service:
+    name: lava-server-gunicorn
+    state: started
+- name: Start lava-master
+  service:
+    name: lava-master
+    state: started
+- name: Start lava-logs
+  service:
+    name: lava-logs
+    state: started
+- name: Start lava-publisher
+  service:
+    name: lava-publisher
+    state: started
