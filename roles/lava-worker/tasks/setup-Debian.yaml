@@ -1,0 +1,26 @@
+- name: Install additional dependencies required on Debian Buster.
+  apt:
+    name:
+    - apparmor
+    - dnsmasq-base
+    state: present
+  # Detect buster via a variable that is stable for RC and release.
+  when: ansible_lsb.codename == "buster"
+
+- name: Ensure LXC networking is available on Debian (lxc-net).
+  copy:
+    src: "{{ role_path }}/files/Debian-lxc-net"
+    dest: /etc/default/lxc-net
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  notify: restart lxc-net
+
+- name: Ensure LXC networking is available on Debian (lxc/default.conf).
+  copy:
+    src: "{{ role_path }}/files/Debian-lxc-default.conf"
+    dest: /etc/lxc/default.conf
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  notify: restart lxc-net
