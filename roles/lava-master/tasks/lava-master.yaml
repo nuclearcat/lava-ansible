@@ -47,7 +47,6 @@
     src: ./templates/lava-master.j2
     dest: "{{ lava_srv_conf_dir }}/lava-master"
     mode: u=rw,g=r,o=r
-  notify: restart lava-master
 
 - name: Deploy LAVA coordinator config for MultiNode jobs.
   template:
