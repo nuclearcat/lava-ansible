@@ -2,3 +2,9 @@ lava-server manage createsuperuser
 SESSION_COOKIE_SECURE
 restart lava-server-gunicorn ?
 
+
+/var/log/lava-server/django.log
+ERROR 2021-11-08 23:13:25,927 exception Invalid HTTP_HOST header: 'XXX:18080'. You may need to add 'XXX' to ALLOWED_HOSTS.
+/etc/lava-server/settings.conf
+systemctl restart lava-server-gunicorn.service
+

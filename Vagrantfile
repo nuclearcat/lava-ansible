@@ -1,6 +1,8 @@
 # ansible-galaxy collection install community.general
 
 Vagrant.configure("2") do |config|
+# Temporary for testing
+#  config.vm.network "forwarded_port", guest: 80, host: 18080
   config.vm.define "lava-master" do |lavamaster|
     lavamaster.vm.box = "generic/debian10"
     lavamaster.ssh.insert_key = false
