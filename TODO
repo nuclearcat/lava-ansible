@@ -1,0 +1,4 @@
+lava-server manage createsuperuser
+SESSION_COOKIE_SECURE
+restart lava-server-gunicorn ?
+

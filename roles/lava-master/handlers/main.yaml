@@ -11,12 +11,6 @@
     state: restarted
   listen: "restart LAVA services"
 
-- name: restart lava-logs
-  service:
-    name: lava-logs
-    state: restarted
-  listen: "restart LAVA services"
-
 - name: restart lava-master
   service:
     name: lava-master

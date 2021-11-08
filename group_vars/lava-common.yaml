@@ -1,7 +1,7 @@
 # LAVA version to install.
 # Before upgrading to a new major version of LAVA, upgrade documentation and/or
 # the lava-announce mailing list must be consulted.
-lava_version: "2019.03*"
+lava_version: "2021.10*"
 lava_apt_key_id: "A791358F2E49B100"
 lava_apt_key_url: "https://apt.lavasoftware.org/lavasoftware.key.asc"
 lava_apt_repo: "deb https://apt.lavasoftware.org/release buster main"

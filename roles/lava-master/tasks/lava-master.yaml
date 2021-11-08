@@ -1,3 +1,15 @@
+- name: Install OS dependencies
+  apt:
+    pkg: [
+      'gpg',
+      'postgresql',
+      'apache2'
+    ]
+    state: latest
+    update_cache: yes
+  tags:
+    - install
+
 - name: Ensure LAVA deb archive signing keys are installed.
   apt_key:
       id: "{{ lava_apt_key_id }}"
@@ -29,7 +41,6 @@
     src: ./templates/lava-logs.j2
     dest: "{{ lava_srv_conf_dir }}/lava-logs"
     mode: u=rw,g=r,o=r
-  notify: restart lava-logs
 
 - name: Deploy LAVA master settings.
   template:
@@ -49,16 +60,32 @@
   template:
     src: ./templates/lava-server-settings.conf.j2
     dest: "{{ lava_srv_conf_dir }}/settings.conf"
-    mode: u=rw,g=r,o=r
-  notify: "restart LAVA services"
+    mode: 0640
+    owner: "lavaserver"
+#  notify: "restart LAVA services"
 
 - name: Ensure LAVA services are started.
   service:
-    state: started
+    state: restarted
     name: "{{ item }}"
   with_list:
   - lava-publisher
-  - lava-logs
-  - lava-master
   - lava-coordinator
   - lava-server-gunicorn
+
+- name: Enable the Apache2 modules
+  community.general.apache2_module:
+    state: present
+    name: proxy
+    name: proxy_http
+
+- name: a2ensite lava-server
+  command: a2ensite lava-server
+
+- name: a2dissite default
+  command: a2dissite 000-default
+
+- name: Ensure Apache2 restarted
+  service:
+    state: restarted
+    name: apache2
