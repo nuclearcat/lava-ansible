@@ -36,12 +36,12 @@
     state: present
     install_recommends: no
 
-- name: Deploy LAVA slave config.
+- name: Deploy LAVA worker config.
   template:
-    src: ./templates/lava-slave.j2
-    dest: "{{ lava_dispatcher_conf_dir }}/lava-slave"
+    src: ./templates/lava-worker.j2
+    dest: "{{ lava_dispatcher_conf_dir }}/lava-worker"
     mode: u=rw,g=r,o=r
-  notify: restart lava-slave
+  notify: restart lava-worker
 
 # One LAVA coordinator handles multiple LAVA workers. The coordinator is
 # installed alongside with the LAVA master; LAVA workers don't have a
@@ -61,9 +61,9 @@
     src: ./templates/lava-coordinator.conf.j2
     dest: "{{ lava_coordinator_conf_dir }}/lava-coordinator.conf"
     mode: u=rw,g=r,o=r
-  notify: restart lava-slave
+  notify: restart lava-worker
 
-- name: Ensure LAVA slave service is started.
+- name: Ensure LAVA worker service is started.
   service:
     state: started
-    name: lava-slave
+    name: lava-worker

@@ -1,8 +1,8 @@
 ---
 
-- name: restart lava-slave
+- name: restart lava-worker
   service:
-    name: lava-slave
+    name: lava-worker
     state: restarted
 
 - name: restart lxc-net

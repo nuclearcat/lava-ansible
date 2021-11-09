@@ -75,7 +75,6 @@
 - name: Enable the Apache2 modules
   community.general.apache2_module:
     state: present
-    name: proxy
     name: proxy_http
 
 - name: a2ensite lava-server
