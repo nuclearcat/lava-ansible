@@ -1,3 +1,4 @@
+ENV['VAGRANT_NO_PARALLEL'] = 'yes'
 Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
   config.vm.box = "generic/debian10"
@@ -15,22 +16,22 @@ Vagrant.configure("2") do |config|
       config.vm.hostname = opts[:name]
       config.vm.network :private_network, ip: opts[:ip]
       if opts[:name] == "lava-master"
-        config.vm.provision "ansible" do |ansible|
-          ansible.become = true
-          ansible.verbose = "v"
-          ansible.playbook = "lava-master.yaml"
-          ansible.galaxy_role_file = "requirements.yml"
-          ansible.inventory_path = "inventories/lava-servers.ini"
+        config.vm.provision "ansible" do |ansible1|
+          ansible1.become = true
+          ansible1.verbose = "v"
+          ansible1.playbook = "lava-master.yaml"
+          ansible1.galaxy_role_file = "requirements.yml"
+          ansible1.inventory_path = "inventories/lava-servers.ini"
         end
       end
       if opts[:name] == "lava-workers"
-        config.vm.provision "ansible" do |ansible|
-          ansible.become = true
-          ansible.verbose = "v"
-          ansible.limit = "all"
-          ansible.playbook = "lava-workers.yaml"
-          ansible.galaxy_role_file = "requirements.yml"
-          ansible.inventory_path = "inventories/lava-servers.ini"
+        config.vm.provision "ansible" do |ansible2|
+          ansible2.become = true
+          ansible2.verbose = "v"
+          ansible2.limit = "all"
+          ansible2.playbook = "lava-workers.yaml"
+          ansible2.galaxy_role_file = "requirements.yml"
+          ansible2.inventory_path = "inventories/lava-servers.ini"
         end
       end
 
